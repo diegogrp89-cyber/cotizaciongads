@@ -6,28 +6,14 @@
 
 <style>
 body { font-family: Arial, sans-serif; background:#f4f6f8; padding:20px; }
-
 .card { max-width:800px; margin:auto; background:#fff; padding:25px; border-radius:10px; }
-h2,h3 { margin:5px 0; }
-
 input, select { width:100%; padding:8px; margin-top:5px; }
-
-button {
-  margin-top:15px; padding:12px; width:100%;
-  background:#27ae60; color:#fff; border:none; border-radius:5px;
-  font-size:16px; cursor:pointer;
-}
-
+button { margin-top:15px; padding:12px; width:100%; background:#27ae60; color:#fff; border:none; border-radius:5px; font-size:16px; cursor:pointer; }
 .table { width:100%; border-collapse:collapse; margin-top:15px; }
-.table th, .table td { border:1px solid #ccc; padding:8px; text-align:left; }
-.table th { background:#ecf0f1; }
-
-#formulario { display:block; }
+.table td, .table th { border:1px solid #ccc; padding:8px; }
 #documento { display:none; }
 
-/* SOLO PDF */
 @media print {
-  body { background:#fff; }
   #formulario { display:none; }
   #documento { display:block; }
 }
@@ -36,7 +22,7 @@ button {
 
 <body>
 
-<!-- VISTA CALCULADORA -->
+<!-- FORMULARIO -->
 <div class="card" id="formulario">
   <h2>Calculadora de Cotización</h2>
 
@@ -59,62 +45,69 @@ button {
   <label><input type="checkbox" id="nocturno"> Trabajo nocturno</label>
   <label><input type="checkbox" id="igv"> Incluir IGV</label>
 
-  <button onclick="calcular()">Calcular</button>
-  <button onclick="window.print()">Generar PDF</button>
+  <button type="button" onclick="calcular()">Calcular</button>
+  <button type="button" onclick="generarPDF()">Generar PDF</button>
 </div>
 
 <!-- DOCUMENTO FORMAL -->
 <div class="card" id="documento">
   <img src="logo.png" height="70"><br>
   <h2>GAD’s Trabajos Verticales</h2>
-  <small>Limpieza de fachadas y trabajos en altura</small>
 
-  <hr>
-
+  <p><b>Cotización N°:</b> <span id="numCot"></span></p>
   <p><b>Cliente:</b> <span id="dCliente"></span></p>
   <p><b>Dirección:</b> <span id="dDireccion"></span></p>
   <p><b>Fecha:</b> <span id="fecha"></span></p>
 
   <table class="table">
-    <tr><th>Concepto</th><th>Monto (S/)</th></tr>
-    <tr><td>Costo base</td><td id="cBase"></td></tr>
-    <tr><td>Recargos</td><td id="cRecargos"></td></tr>
-    <tr><td>Equipos</td><td id="cEquipo"></td></tr>
-    <tr><td>Pasajes</td><td id="cPasajes"></td></tr>
-    <tr><th>Subtotal</th><th id="cSubtotal"></th></tr>
-    <tr><td>IGV</td><td id="cIGV"></td></tr>
-    <tr><th>TOTAL</th><th id="cTotal"></th></tr>
+    <tr>
+      <th>Descripción</th>
+      <th>Monto (S/)</th>
+    </tr>
+    <tr>
+      <td>SERVICIO DE MANTENIMIENTO Y LIMPIEZA DE FACHADA MEDIANTE ACCESO POR CUERDA</td>
+      <td id="totalPDF"></td>
+    </tr>
+    <tr>
+      <td>IGV 18%</td>
+      <td id="igvPDF"></td>
+    </tr>
+    <tr>
+      <th>TOTAL</th>
+      <th id="finalPDF"></th>
+    </tr>
   </table>
 
-  <p><b>Observaciones:</b><br>
-  • Trabajo con acceso por cuerda<br>
-  • Personal especializado<br>
-  • Equipos certificados</p>
-
-  <p style="margin-top:50px">
-    ___________________________<br>
-    GAD’s Trabajos Verticales
-  </p>
+  <p style="margin-top:50px">___________________________<br>GAD’s Trabajos Verticales</p>
 </div>
 
 <script>
 function calcular(){
-  let m2 = +m2Input.value, p = +precio.value, d = +dias.value, t = +tecnicos.value;
-  let base = m2*p*3, eq = d*100, pas = t*30;
-  let rec = base*(+altura.value) + (sucio.checked?base*0.15:0) + (nocturno.checked?base*0.25:0);
-  let sub = base+eq+pas+rec, ig = igv.checked?sub*0.18:0, tot = sub+ig;
+  let m2=+m2Input.value, p=+precio.value, d=+dias.value, t=+tecnicos.value;
+  let base=m2*p*3, eq=d*100, pas=t*30;
+  let rec=base*(+altura.value)+(sucio.checked?base*0.15:0)+(nocturno.checked?base*0.25:0);
+  let sub=base+eq+pas+rec, ig=igv.checked?sub*0.18:0, tot=sub+ig;
 
-  dCliente.textContent = cliente.value;
-  dDireccion.textContent = direccion.value;
-  fecha.textContent = new Date().toLocaleDateString();
+  guardarCotizacion();
 
-  cBase.textContent = base.toFixed(2);
-  cRecargos.textContent = rec.toFixed(2);
-  cEquipo.textContent = eq.toFixed(2);
-  cPasajes.textContent = pas.toFixed(2);
-  cSubtotal.textContent = sub.toFixed(2);
-  cIGV.textContent = ig.toFixed(2);
-  cTotal.textContent = tot.toFixed(2);
+  dCliente.textContent=cliente.value;
+  dDireccion.textContent=direccion.value;
+  fecha.textContent=new Date().toLocaleDateString();
+
+  totalPDF.textContent=sub.toFixed(2);
+  igvPDF.textContent=ig.toFixed(2);
+  finalPDF.textContent=tot.toFixed(2);
+}
+
+function generarPDF(){
+  window.print();
+}
+
+function guardarCotizacion(){
+  let n=localStorage.getItem("cot")||0;
+  n++;
+  localStorage.setItem("cot",n);
+  numCot.textContent="COT-2026-"+String(n).padStart(3,"0");
 }
 
 const cliente=document.getElementById("cliente"),

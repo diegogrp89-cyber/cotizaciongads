@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Cotización - GAD’s Trabajos Verticales</title>
+<title>Cotización - GAD’s Safety & Vertical Access</title>
 
 <style>
 body { font-family: Arial, sans-serif; background:#f4f6f8; padding:20px; }
@@ -30,9 +30,9 @@ button { margin-top:15px; padding:12px; width:100%; background:#27ae60; color:#f
   <label>Dirección</label><input id="direccion">
 
   <label>m²</label><input id="m2" type="number">
-  <label>Precio por m²</label><input id="precio" value="9">
+  <label>Precio por m²</label><input id="precio" value="10">
   <label>Días</label><input id="dias" value="1">
-  <label>Técnicos</label><input id="tecnicos" value="2">
+  <label>Técnicos</label><input id="tecnicos" value="1">
 
   <label>Altura</label>
   <select id="altura">
@@ -52,7 +52,7 @@ button { margin-top:15px; padding:12px; width:100%; background:#27ae60; color:#f
 <!-- DOCUMENTO FORMAL -->
 <div class="card" id="documento">
   <img src="logo.png" height="70"><br>
-  <h2>GAD’s Trabajos Verticales</h2>
+  <h2>GAD’s Safety & Vertical Access</h2>
 
   <p><b>Cotización N°:</b> <span id="numCot"></span></p>
   <p><b>Cliente:</b> <span id="dCliente"></span></p>
@@ -61,10 +61,12 @@ button { margin-top:15px; padding:12px; width:100%; background:#27ae60; color:#f
 
   <table class="table">
     <tr>
+      <th>N°</th>
       <th>Descripción</th>
       <th>Monto (S/)</th>
     </tr>
     <tr>
+      <td>01</td>
       <td>SERVICIO DE MANTENIMIENTO Y LIMPIEZA DE FACHADA MEDIANTE ACCESO POR CUERDA</td>
       <td id="totalPDF"></td>
     </tr>
@@ -78,7 +80,7 @@ button { margin-top:15px; padding:12px; width:100%; background:#27ae60; color:#f
     </tr>
   </table>
 
-  <p style="margin-top:50px">___________________________<br>GAD’s Trabajos Verticales</p>
+  <p style="margin-top:50px">___________________________<br>Diego Romero Paredes<br>GAD’s Safety & Vertical Access</p>
 </div>
 
 <script>

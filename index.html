@@ -1,1 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Calculadora de Cotización - GAD’s Trabajos Verticales</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        padding: 20px;
+    }
+    .card {
+        max-width: 500px;
+        margin: auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+        text-align: center;
+        color: #2c3e50;
+    }
+    label {
+        font-weight: bold;
+        display: block;
+        margin-top: 10px;
+    }
+    input, select {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+    }
+    .checkbox {
+        margin-top: 10px;
+    }
+    button {
+        margin-top: 15px;
+        width: 100%;
+        padding: 12px;
+        background: #27ae60;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    button:hover {
+        background: #219150;
+    }
+    .resultado {
+        margin-top: 20px;
+        background: #ecf0f1;
+        padding: 15px;
+        border-radius: 8px;
+        font-size: 15px;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h2>Calculadora de Cotización PRO</h2>
+
+    <label>Metros cuadrados (m²)</label>
+    <input type="number" id="m2" value="0">
+
+    <label>Precio por m² (S/)</label>
+    <input type="number" id="precio" value="9">
+
+    <label>Días de trabajo</label>
+    <input type="number" id="dias" value="1">
+
+    <label>Número de técnicos</label>
+    <input type="number" id="tecnicos" value="2">
+
+    <label>Altura mayor a 30 m</label>
+    <select id="altura">
+        <option value="0">No aplica</option>
+        <option value="0.10">+10%</option>
+        <option value="0.20">+20%</option>
+    </select>
+
+    <div class="checkbox">
+        <input type="checkbox" id="sucio"> Vidrio muy contaminado (+15%)
+    </div>
+
+    <div class="checkbox">
+        <input type="checkbox" id="nocturno"> Trabajo nocturno (+25%)
+    </div>
+
+    <div class="checkbox">
+        <input type="checkbox" id="igv"> Incluir IGV (18%)
+    </div>
+
+    <button onclick="calcular()">Calcular cotización</button>
+
+    <div class="resultado" id="resultado"></div>
+</div>
+
+<script>
+function calcular() {
+    let m2 = Number(document.getElementById("m2").value);
+    let precio = Number(document.getElementById("precio").value);
+    let dias = Number(document.getElementById("dias").value);
+    let tecnicos = Number(document.getElementById("tecnicos").value);
+
+    let costoBase = m2 * precio * 3;
+
+    let equipo = dias * 100;
+    let pasajes = tecnicos * 30;
+
+    let recargoAltura = costoBase * Number(document.getElementById("altura").value);
+    let recargoSucio = document.getElementById("sucio").checked ? costoBase * 0.15 : 0;
+    let recargoNocturno = document.getElementById("nocturno").checked ? costoBase * 0.25 : 0;
+
+    let subtotal = costoBase + equipo + pasajes + recargoAltura + recargoSucio + recargoNocturno;
+
+    let igv = document.getElementById("igv").checked ? subtotal * 0.18 : 0;
+    let total = subtotal + igv;
+
+    document.getElementById("resultado").innerHTML = `
+        <b>Costo base:</b> S/ ${costoBase.toFixed(2)}<br>
+        <b>Equipo:</b> S/ ${equipo.toFixed(2)}<br>
+        <b>Pasajes:</b> S/ ${pasajes.toFixed(2)}<br>
+        <b>Recargos:</b> S/ ${(recargoAltura + recargoSucio + recargoNocturno).toFixed(2)}<br>
+        <b>Subtotal:</b> S/ ${subtotal.toFixed(2)}<br>
+        <b>IGV:</b> S/ ${igv.toFixed(2)}<br><br>
+        <b style="font-size:18px">TOTAL: S/ ${total.toFixed(2)}</b>
+    `;
+}
+</script>
+
+</body>
+</html>
 

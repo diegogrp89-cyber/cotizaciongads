@@ -2,66 +2,110 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Calculadora de Cotización - GAD’s Trabajos Verticales</title>
+<title>Cotización - GAD’s Trabajos Verticales</title>
+
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #f4f6f8;
-        padding: 20px;
-    }
-    .card {
-        max-width: 500px;
-        margin: auto;
-        background: #fff;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    h2 {
-        text-align: center;
-        color: #2c3e50;
-    }
-    label {
-        font-weight: bold;
-        display: block;
-        margin-top: 10px;
-    }
-    input, select {
-        width: 100%;
-        padding: 8px;
-        margin-top: 5px;
-    }
-    .checkbox {
-        margin-top: 10px;
-    }
-    button {
-        margin-top: 15px;
-        width: 100%;
-        padding: 12px;
-        background: #27ae60;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        font-size: 16px;
-        cursor: pointer;
-    }
-    button:hover {
-        background: #219150;
-    }
-    .resultado {
-        margin-top: 20px;
-        background: #ecf0f1;
-        padding: 15px;
-        border-radius: 8px;
-        font-size: 15px;
-    }
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    padding: 20px;
+}
+
+.card {
+    max-width: 700px;
+    margin: auto;
+    background: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-bottom: 2px solid #27ae60;
+    padding-bottom: 10px;
+}
+
+.header img {
+    height: 70px;
+}
+
+.header h2 {
+    margin: 0;
+    color: #2c3e50;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+}
+
+input, select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+}
+
+.checkbox {
+    margin-top: 10px;
+}
+
+button {
+    margin-top: 15px;
+    padding: 12px;
+    width: 100%;
+    background: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #219150;
+}
+
+.resultado {
+    margin-top: 20px;
+    background: #ecf0f1;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.cotizacion {
+    margin-top: 30px;
+    padding: 20px;
+    border: 1px solid #ccc;
+}
+
+@media print {
+    button { display: none; }
+    body { background: #fff; }
+}
 </style>
 </head>
 
 <body>
 
-<div class="card">
-    <h2>Calculadora de Cotización PRO</h2>
+<div class="card" id="cotizacion">
+
+    <div class="header">
+        <img src="logo.png" alt="Logo GAD’s">
+        <div>
+            <h2>GAD’s Trabajos Verticales</h2>
+            <small>Limpieza de fachadas y trabajos en altura</small>
+        </div>
+    </div>
+
+    <label>Cliente</label>
+    <input type="text" id="cliente">
+
+    <label>Dirección del servicio</label>
+    <input type="text" id="direccion">
 
     <label>Metros cuadrados (m²)</label>
     <input type="number" id="m2" value="0">
@@ -95,41 +139,55 @@
     </div>
 
     <button onclick="calcular()">Calcular cotización</button>
+    <button onclick="window.print()">Generar cotización (PDF)</button>
 
     <div class="resultado" id="resultado"></div>
 </div>
 
 <script>
 function calcular() {
-    let m2 = Number(document.getElementById("m2").value);
-    let precio = Number(document.getElementById("precio").value);
-    let dias = Number(document.getElementById("dias").value);
-    let tecnicos = Number(document.getElementById("tecnicos").value);
+    let m2 = Number(m2Input.value);
+    let precio = Number(precioInput.value);
+    let dias = Number(diasInput.value);
+    let tecnicos = Number(tecnicosInput.value);
 
     let costoBase = m2 * precio * 3;
-
     let equipo = dias * 100;
     let pasajes = tecnicos * 30;
 
-    let recargoAltura = costoBase * Number(document.getElementById("altura").value);
-    let recargoSucio = document.getElementById("sucio").checked ? costoBase * 0.15 : 0;
-    let recargoNocturno = document.getElementById("nocturno").checked ? costoBase * 0.25 : 0;
+    let recargoAltura = costoBase * Number(altura.value);
+    let recargoSucio = sucio.checked ? costoBase * 0.15 : 0;
+    let recargoNocturno = nocturno.checked ? costoBase * 0.25 : 0;
 
     let subtotal = costoBase + equipo + pasajes + recargoAltura + recargoSucio + recargoNocturno;
+    let igvMonto = igv.checked ? subtotal * 0.18 : 0;
+    let total = subtotal + igvMonto;
 
-    let igv = document.getElementById("igv").checked ? subtotal * 0.18 : 0;
-    let total = subtotal + igv;
+    resultado.innerHTML = `
+        <b>Cliente:</b> ${cliente.value}<br>
+        <b>Dirección:</b> ${direccion.value}<br><br>
 
-    document.getElementById("resultado").innerHTML = `
         <b>Costo base:</b> S/ ${costoBase.toFixed(2)}<br>
         <b>Equipo:</b> S/ ${equipo.toFixed(2)}<br>
         <b>Pasajes:</b> S/ ${pasajes.toFixed(2)}<br>
         <b>Recargos:</b> S/ ${(recargoAltura + recargoSucio + recargoNocturno).toFixed(2)}<br>
         <b>Subtotal:</b> S/ ${subtotal.toFixed(2)}<br>
-        <b>IGV:</b> S/ ${igv.toFixed(2)}<br><br>
+        <b>IGV:</b> S/ ${igvMonto.toFixed(2)}<br><br>
         <b style="font-size:18px">TOTAL: S/ ${total.toFixed(2)}</b>
     `;
 }
+
+const cliente = document.getElementById("cliente");
+const direccion = document.getElementById("direccion");
+const m2Input = document.getElementById("m2");
+const precioInput = document.getElementById("precio");
+const diasInput = document.getElementById("dias");
+const tecnicosInput = document.getElementById("tecnicos");
+const altura = document.getElementById("altura");
+const sucio = document.getElementById("sucio");
+const nocturno = document.getElementById("nocturno");
+const igv = document.getElementById("igv");
+const resultado = document.getElementById("resultado");
 </script>
 
 </body>
